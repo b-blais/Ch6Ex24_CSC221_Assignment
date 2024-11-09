@@ -1,5 +1,5 @@
 /*
-Title: Chapter 6 Exercise 24 - Rock. Paper , Scissors
+Title: Chapter 6 Exercise 24 - Rock. Paper , Scissors Part 2
 File Name : Ch6Ex24_CSC221_Assignment
 Programmer : Brion Blais
 Date : 11 / 2024
@@ -15,6 +15,14 @@ Write a program that lets the user play the game of Rock, Paper, Scissors agains
   • If one player chooses paper and the other player chooses rock, then paper wins. (Paper wraps rock.)
   • If both players make the same choice, the game must be played again to determine the winner.
 Be sure to divide the program into functions that perform each major task.
+
+Part 2:
+Revise your original Rock Paper Scissors Game so that it is repeatable
+using  sentinel value to end.. On each iteration of the game you should
+accept the name of the player and keep count of how many times they
+have won. Modify your program using a new branch of your project so that
+you preserve the orginal main branch from Part 1.
+Submit the code file as well as a screenshot of your testing
  */
 
 #include <iostream>
@@ -25,13 +33,29 @@ int randomNumber();
 string computerChoiceFunc();
 string userChoiceFunc();
 string theGameEngine(string, string);
+string getPlayerName();
+void totalWins(string);
+
+int playerWins = 0;
+int computerWins = 0;
+int ties = 0;
 
 int main()
 {
     
-    string computerChoice = computerChoiceFunc();
-    string userChoice = userChoiceFunc();
-    string winner = theGameEngine(computerChoice, userChoice);
+    string playerName = getPlayerName();
+    cout << "Welcome to the Rock, Paper, Scissors game " << playerName << "!\n\n";
+    string userChoice;
+    while (userChoice != "Game Over") {
+        string computerChoice = computerChoiceFunc();
+        userChoice = userChoiceFunc();
+        if (userChoice == "Game Over") {
+            continue;
+        }
+        string winner = theGameEngine(computerChoice, userChoice);
+        totalWins(winner);
+    }
+        
     cout << "Game Over\n";
     return 0;
 }
@@ -62,20 +86,25 @@ string userChoiceFunc() {
         cout << "1\tRock\n";
         cout << "2\tPaper\n";
         cout << "3\tScissors\n";
+        cout << "-------------------\n";
+        cout << "If you are done playing, enter -1\n";
         cin >> userSelection;
         cout << "\n";
     } 
-    while (userSelection < 1 || userSelection > 3);
+    while ((userSelection < 1 || userSelection > 3) && userSelection != -1);
     switch (userSelection) {
+    case -1:
+        return "Game Over";
+        break;
     case 1:
         return "Rock";
         break; //shouldn't be needed, as return should exit the switch
     case 2:
         return "Paper";
-        break; //shouldn't be needed, as return should exit the switch
+        break; 
     case 3:
         return "Scissors";
-        break; //shouldn't be needed, as return should exit the switch
+        break; 
     default:
         cout << "Program error.";
         return "Error";
@@ -96,42 +125,62 @@ string theGameEngine(string computerChoice, string userChoice) {
     
     if (computerChoice == "Rock" && userChoice == "Rock") {
         cout << "You both threw ** Rock **!! No winner, it's a tie.\t";
-        string result = "Tie";
+        result = "Tie";
     }
     else if (computerChoice == "Rock" && userChoice == "Paper") {
         cout << "Paper wraps rock ... You win!!\t";
-        string result = "User Win";
+        result = "User Win";
     }
     else if (computerChoice == "Rock" && userChoice == "Scissors") {
         cout << "Rock smashes the scissors ... the computer wins!\t";
-        string result = "Computer Win";
+        result = "Computer Win";
     }
     else if (computerChoice == "Paper" && userChoice == "Rock") {
         cout << "Paper wraps rock ... the computer wins!\t";
-        string result = "Computer Win";
+        result = "Computer Win";
     }
     else if (computerChoice == "Paper" && userChoice == "Paper") {
         cout << "You both threw ** Paper **!! No winner, it's a tie.\t";
-        string result = "Tie";
+        result = "Tie";
     }
     else if (computerChoice == "Paper" && userChoice == "Scissors") {
         cout << "Scissors cuts paper ... You win!!\t";
-        string result = "User Win";
+        result = "User Win";
     }
     else if (computerChoice == "Scissors" && userChoice == "Rock") {
         cout << "Rock smashes the scissors ... You win!!\t";
-        string result = "User Win";
+        result = "User Win";
     }
     else if (computerChoice == "Scissors" && userChoice == "Paper") {
         cout << "Scissors cuts paper ... the computer wins!\t";
-        string result = "Computer Win";
+        result = "Computer Win";
     }
     else if (computerChoice == "Scissors" && userChoice == "Scissors") {
         cout << "You both threw ** Scissors **!! No winner, it's a tie.\t";
-        string result = "Tie";
+        result = "Tie";
     }
     else {
         cout << "Program Error";
     }
     return result;
+}
+
+string getPlayerName() {
+    string playerName;
+    cout << "Please enter your name:\t";
+    cin >> playerName;
+    return playerName;
+}
+
+void totalWins(string winner) {
+    if (winner == "User Win") {
+        ++playerWins;
+    } 
+    else if (winner == "Computer Win") {
+        ++computerWins;
+    }
+    else if (winner == "Tie") {
+        ++ties;
+    }
+    cout << "\nYou have " << playerWins << " wins, " << computerWins << " losses, and " << ties << " ties.\n\n";
 }
